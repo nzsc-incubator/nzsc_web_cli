@@ -151,7 +151,7 @@ const create = async (args, state) => {
     write2Ln('This is probably because it already exists.');
   });
 
-  writeLn('Creating guardian...');
+  writeLn('Creating guardian...', PENDING);
 };
 
 const set = async (args, state) => {
