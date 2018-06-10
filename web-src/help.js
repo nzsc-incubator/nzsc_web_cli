@@ -2,6 +2,11 @@ import { writeLn, write2Ln } from './io';
 
 const withCommand = (commandName) => {
   switch (commandName) {
+    case 'list':
+      writeLn('Usage:');
+      write2Ln('list');
+      write2Ln('List all the game rooms you can join.');
+      break;
     case 'create':
       writeLn('Usage:');
       write2Ln('create <gameId>');
@@ -49,6 +54,7 @@ const listCommands = () => {
   writeLn('"Porcelain" Commands:');
 
   [
+    'list',
     'create <gameId>',
     'join <gameId>',
     'delete',
@@ -70,7 +76,7 @@ const listCommands = () => {
   });
 
   writeLn('');
-  write2Ln('For more help with a specific command, type help <command>.');
+  write2Ln('For more help with a specific command, type "help <command>".');
 };
 
 export default {
