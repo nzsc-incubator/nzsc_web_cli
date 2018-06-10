@@ -5,17 +5,17 @@ const withCommand = (commandName) => {
     case 'list':
       writeLn('Usage:');
       write2Ln('list');
-      write2Ln('List all the game rooms you can join.');
+      write2Ln('List the name of every game room you can join.');
       break;
     case 'create':
       writeLn('Usage:');
-      write2Ln('create <gameId>');
-      write2Ln('Create a game room with the given gameId.');
+      write2Ln('create <gameRoomName>');
+      write2Ln('Create a game room with the given name.');
       break;
     case 'join':
       writeLn('Usage:');
-      write2Ln('join <gameId>');
-      writeLn('Join the game room that has the given gameId.');
+      write2Ln('join <gameRoomName>');
+      writeLn('Join the game room that has the given name.');
       write2Ln('Will throw an error if there exists no game room with the given gameId.');
       break;
     case 'delete':
@@ -55,8 +55,8 @@ const listCommands = () => {
 
   [
     'list',
-    'create <gameId>',
-    'join <gameId>',
+    'create <gameRoomName>',
+    'join <gameRoomName>',
     'delete',
     'deposit <item>',
     'help <command>'

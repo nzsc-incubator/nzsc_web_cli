@@ -96,7 +96,7 @@ const list = async (args, state) => {
       });
     } else {
       writeLn('There are no open game rooms.');
-      write2Ln('You can create your own with "create <gameId>"');
+      write2Ln('You can create your own with "create <gameRoomName>"');
     }
   }).catch((e) => {
     console.log('Unexpected list error: ', e);
