@@ -5,6 +5,7 @@ An ugly but functional way to play two-player NZSC on the cloud.
 ## Usage
 
 If you don't already know how to play NZSC, read [the handbook](https://nzsc-org.github.io/nzsc_handbook/book/) before continuing.
+Otherwise, [open the web app in your browser](https://nzsc-incubator.github.io/nzsc_web_cli/).
 
 1. Look for open game rooms you can join. To do this, type `list`.
 2. If any open game rooms appear, join one of them. To do this, type `join <gameRoomName>` where `<gameRoomName>` is the name of the game room you want to join.
