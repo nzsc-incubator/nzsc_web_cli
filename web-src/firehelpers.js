@@ -16,10 +16,9 @@ const NONE_VIEWED = 6;
 const A_VIEWED = 7;
 const B_VIEWED = 8;
 
-const ERROR = {
-  bg: '#111',
-  text: '#C00',
-};
+const ERROR = 'terminal-error';
+const SUCCESS = 'terminal-success';
+const PENDING = 'terminal-pending';
 
 const seal = async (id, aOrB) => {
   const guardianRef = db.collection('guardians').doc(id);
@@ -27,16 +26,16 @@ const seal = async (id, aOrB) => {
     await guardianRef.update({
       state: aOrB === A ? A_SEALED : B_SEALED,
     });
-    write2Ln('Sealed.');
+    write2Ln('Sealed.', SUCCESS);
   } catch {
     try {
       await guardianRef.update({
         state: NONE_VIEWED,
       });
-      write2Ln('Sealed.');
+      write2Ln('Sealed.', SUCCESS);
     } catch (e) {
       console.log('Unexpected sealing error: ', e);
-      write2Ln('Failed to seal.');
+      write2Ln('Failed to seal.', ERROR);
     }
   }
 };

@@ -38,15 +38,6 @@ const main = async () => {
       case 'delete':
         await commands.delete_(args, state);
         break;
-      case 'delete-guardian':
-        await commands.deleteGuardian(args, state);
-        break;
-      case 'delete-a-vault':
-        await commands.deleteAVault(args, state);
-        break;
-      case 'delete-b-vault':
-        await commands.deleteBVault(args, state);
-        break;
       case 'join':
         await commands.join(args, state);
         break;

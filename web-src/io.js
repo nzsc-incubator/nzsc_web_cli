@@ -3,23 +3,26 @@ const ENTER_KEY = 13;
 const input = document.getElementById('terminal-input');
 const output = document.getElementById('terminal-output');
 
-const write = (content) => {
-  output.textContent += content;
+const write = (content, className) => {
+  if (className) {
+    content = '<span class="' + className + '">' + content + '</span>';
+  }
+  output.innerHTML += content;
 };
-const writeLn = (content) => {
-  write(content + '\n');
+const writeLn = (content, className) => {
+  write(content + '\n', className);
 };
-const write2Ln = (content) => {
-  write(content + '\n\n');
+const write2Ln = (content, className) => {
+  write(content + '\n\n', className);
 };
-const writeJson = (json) => {
-  write(JSON.stringify(json, null, 4));
+const writeJson = (json, className) => {
+  write(JSON.stringify(json, null, 4), className);
 };
-const writeJsonLn = (json) => {
-  writeLn(JSON.stringify(json, null, 4));
+const writeJsonLn = (json, className) => {
+  writeLn(JSON.stringify(json, null, 4), className);
 };
-const writeJson2Ln = (json) => {
-  write2Ln(JSON.stringify(json, null, 4));
+const writeJson2Ln = (json, className) => {
+  write2Ln(JSON.stringify(json, null, 4), className);
 };
 
 const clear = () => {

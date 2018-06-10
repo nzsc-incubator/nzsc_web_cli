@@ -36,3 +36,16 @@ body {
   border: none;
   outline: none;
 }
+
+.terminal-error {
+  background-color: #000;
+  color: #C00;
+}
+
+.terminal-success {
+  color: #0C0;
+}
+
+.terminal-pending {
+  color: #08B;
+}

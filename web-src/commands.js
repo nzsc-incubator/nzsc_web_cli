@@ -19,10 +19,9 @@ const NONE_VIEWED = 6;
 const A_VIEWED = 7;
 const B_VIEWED = 8;
 
-const ERROR = {
-  bg: '#111',
-  text: '#C00',
-};
+const ERROR = 'terminal-error';
+const SUCCESS = 'terminal-success';
+const PENDING = 'terminal-pending';
 
 // Misc
 
@@ -37,13 +36,13 @@ const addGuardianObserver = async (guardianRef, id) => {
 
 const login = async (_args, state) => {
   firebase.auth().signInAnonymously().catch((error) => {
-    write2Ln('Failed to sign in.');
-    console.log(error);
+    console.log('Unexpected sign-in error:', error);
+    write2Ln('Failed to sign in.', ERROR);
   });
 
   firebase.auth().onAuthStateChanged((user) => {
     if (user === null) {
-      write2Ln('You are not signed in yet...');
+      write2Ln('You are not signed in yet...', PENDING);
     } else {
       state.uid = user.uid;
       write2Ln('Your uid is: ' + user.uid);
@@ -53,7 +52,7 @@ const login = async (_args, state) => {
 
 const create = async (args, state) => {
   if (state.uid === null) {
-    write2Ln('Please login first.');
+    write2Ln('Please login first.', ERROR);
     return;
   }
 
@@ -64,15 +63,15 @@ const create = async (args, state) => {
   guardianRef.set({
     state: NONE_CREATED
   }).then(() => {
-    writeLn('Created guardian: ' + id);
-    writeLn('Creating A-vault...');
+    writeLn('Created guardian ' + id, SUCCESS);
+    writeLn('Creating A-vault...', PENDING);
 
     vaultRef.set({
       owner: state.uid,
       payload: ''
     }).then(() => {
-      writeLn('Created A-vault: ' + id);
-      writeLn('Updating guardian...');
+      writeLn('Created A-vault ' + id, SUCCESS);
+      writeLn('Updating guardian...', PENDING);
 
       state.aOrB = A;
       state.id = id;
@@ -80,18 +79,21 @@ const create = async (args, state) => {
       guardianRef.update({
         state: A_CREATED
       }).then(() => {
-        writeLn('Updated guardian.');
+        writeLn('Updated guardian.', SUCCESS);
 
-        write2Ln('Listening for changes...');
+        write2Ln('Listening for changes...', PENDING);
         addGuardianObserver(guardianRef, id);
       }).catch((e) => {
-        writeLn('Failed to update guardian.');
+        console.log('Unexpected post-vault-creation guardian update error: ', e);
+        writeLn('Failed to update guardian.', ERROR);
       });
     }).catch((e) => {
-      write2Ln('Failed to create A-vault: ' + id);
+      console.log('Unexpected vault-creation error', e);
+      write2Ln('Failed to create A-vault.');
     });
-  }).catch((e) => {
-    write2Ln('Failed to create guardian: ' + id);
+  }).catch((_e) => {
+    writeLn('Failed to create guardian: ' + id, ERROR);
+    write2Ln('This is probably because it already exists.');
   });
 
   writeLn('Creating guardian...');
@@ -100,7 +102,7 @@ const create = async (args, state) => {
 const set = async (args, state) => {
   const [key, val] = args;
   state[key] = val;
-  write2Ln('Assignment succeeded! state.' + key + ' = ' + val);
+  write2Ln('Assignment succeeded! state.' + key + ' = ' + val, SUCCESS);
 };
 
 const get = async (args, state) => {
@@ -117,7 +119,7 @@ const delete_ = async (args, state) => {
 
   if (!id) {
     if (state.id === null) {
-      write2Ln('You are not associated with a game.');
+      write2Ln('You are not in a game.', ERROR);
       return;
     } else {
       id = state.id;
@@ -130,41 +132,45 @@ const delete_ = async (args, state) => {
     const vaultRef = db.collection('aVaults').doc(id);
 
     vaultRef.delete().then(() => {
-      writeLn('Deleted A-vault: ' + id);
-      writeLn('Deleting guardian...');
+      writeLn('Deleted A-vault ' + id, SUCCESS);
+      writeLn('Deleting guardian...', PENDING);
 
       guardianRef.delete().then(() => {
-        write2Ln('Deleted guardian: ' + id);
-      }).catch((e) => {
-        write2Ln('Failed to delete guardian: ' + id);
+        write2Ln('Deleted guardian ' + id, SUCCESS);
+      }).catch((_e) => {
+        writeLn('Failed to delete guardian ' + id, ERROR);
+        write2Ln('This is probably because somebody is still in the game room.');
       });
     }).catch((e) => {
-      write2Ln('Failed to delete A-vault: ' + id);
+      console.log('Unexpected deletion error: ', e);
+      write2Ln('Failed to delete A-vault ' + id, ERROR);
     });
 
-    writeLn('Deleting A-vault...');
+    writeLn('Deleting A-vault...', PENDING);
   } else if (state.aOrB === B) {
     const vaultRef = db.collection('bVaults').doc(id);
 
     vaultRef.delete().then(() => {
-      writeLn('Deleted B-vault: ' + id);
-      writeLn('Deleting guardian...');
+      writeLn('Deleted B-vault ' + id, SUCCESS);
+      writeLn('Deleting guardian...', PENDING);
 
       guardianRef.delete().then(() => {
-        write2Ln('Deleted guardian: ' + id);
-      }).catch((e) => {
-        write2Ln('Failed to delete guardian: ' + id);
+        write2Ln('Deleted guardian ' + id, SUCCESS);
+      }).catch((_e) => {
+        writeLn('Failed to delete guardian ' + id, ERROR);
+        write2Ln('This is probably because somebody is still in the game room.');
       });
     }).catch((e) => {
-      write2Ln('Failed to delete B-vault: ' + id);
+      console.log('Unexpected deletion error: ', e);
+      write2Ln('Failed to delete B-vault ' + id, ERROR);
     });
 
-    writeLn('Deleting B-vault...');
+    writeLn('Deleting B-vault...', PENDING);
   } else {
-    write2Ln('You are not associated with ' + id);
+    write2Ln('You are not in game room ' + id, ERROR);
   }
 };
-
+/*
 const deleteGuardian = async (args, state) => {
   const id = args[0];
   const guardianRef = db.collection('guardians').doc(id);
@@ -203,7 +209,7 @@ const deleteBVault = async (args, state) => {
 
   writeLn('Deleting B-vault...');
 };
-
+*/
 const join = async (args, state) => {
   if (state.uid === null) {
     write2Ln('Please login first.');
@@ -218,8 +224,8 @@ const join = async (args, state) => {
     owner: state.uid,
     payload: ''
   }).then(() => {
-    writeLn('Successfully joined: ' + id);
-    writeLn('Updating guardian...');
+    writeLn('Successfully joined ' + id, SUCCESS);
+    writeLn('Updating guardian...', PENDING);
 
     state.id = id;
     state.aOrB = B;
@@ -227,25 +233,27 @@ const join = async (args, state) => {
     guardianRef.update({
       state: NONE_SEALED,
     }).then(() => {
-      writeLn('Updated guardian.');
-      write2Ln('Listening for changes...');
+      writeLn('Updated guardian.', SUCCESS);
+      write2Ln('Listening for changes...', PENDING);
 
       addGuardianObserver(guardianRef, id);
     }).catch((e) => {
-      write2Ln('Failed to update guardian.');
+      console.log('Unexpected post-bvault-creation guardian-update error:', e);
+      write2Ln('Failed to update guardian.', ERROR);
     });
-  }).catch((e) => {
-    write2Ln('Failed to join: ' + id);
+  }).catch((_e) => {
+    writeLn('Failed to join: ' + id, ERROR);
+    write2Ln('This is probably because the game either is full or does not exist.');
   });
 
-  writeLn('Joining...');
+  writeLn('Joining...', PENDING);
 };
 
 const deposit = async ([payload], state) => {
   const { id, aOrB } = state;
 
   if (id === null || aOrB === null) {
-    write2Ln('You are not in a game.');
+    write2Ln('You are not in a game.', ERROR);
     return;
   }
 
@@ -258,9 +266,9 @@ const deposit = async ([payload], state) => {
     await vaultRef.update({
       payload,
     });
-    
-    writeLn('Successfully deposited ' + payload);
-    writeLn('Sealing...');
+
+    writeLn('Successfully deposited ' + payload, SUCCESS);
+    writeLn('Sealing...', PENDING);
 
     await firehelpers.seal(id, aOrB);
   } catch (e) {
@@ -275,9 +283,6 @@ export {
   get,
   set,
   delete_,
-  deleteGuardian,
-  deleteAVault,
-  deleteBVault,
   join,
   deposit,
 };
