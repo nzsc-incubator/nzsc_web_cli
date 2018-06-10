@@ -20,7 +20,7 @@ const B_VIEWED = 8;
 
 // Misc
 
-const addGuardianObserver = (guardianRef, id) => {
+const addGuardianObserver = async (guardianRef, id) => {
   guardianRef.onSnapshot((guardianDoc) => {
     const guardianData = guardianDoc.data();
     write2Ln('Guardian state is now: ' + guardianData.state);
@@ -29,7 +29,7 @@ const addGuardianObserver = (guardianRef, id) => {
 
 // Commands
 
-const login = (_args, state) => {
+const login = async (_args, state) => {
   firebase.auth().signInAnonymously().catch((error) => {
     write2Ln('Failed to sign in.');
     console.log(error);
@@ -45,7 +45,7 @@ const login = (_args, state) => {
   });
 };
 
-const create = (args, state) => {
+const create = async (args, state) => {
   if (state.uid === null) {
     write2Ln('Please login first.');
     return;
@@ -91,13 +91,13 @@ const create = (args, state) => {
   writeLn('Creating guardian...');
 };
 
-const set = (args, state) => {
+const set = async (args, state) => {
   const [key, val] = args;
   state[key] = val;
   write2Ln('Assignment succeeded! state.' + key + ' = ' + val);
 };
 
-const get = (args, state) => {
+const get = async (args, state) => {
   const key = args[0];
   if (key === undefined) {
     writeJson2Ln(state);
@@ -106,7 +106,7 @@ const get = (args, state) => {
   }
 };
 
-const delete_ = (args, state) => {
+const delete_ = async (args, state) => {
   let id = args[0];
 
   if (!id) {
@@ -159,7 +159,7 @@ const delete_ = (args, state) => {
   }
 };
 
-const deleteGuardian = (args, state) => {
+const deleteGuardian = async (args, state) => {
   const id = args[0];
   const guardianRef = db.collection('guardians').doc(id);
 
@@ -172,7 +172,7 @@ const deleteGuardian = (args, state) => {
   writeLn('Deleting guardian...');
 };
 
-const deleteAVault = (args, state) => {
+const deleteAVault = async (args, state) => {
   const id = args[0];
   const vaultRef = db.collection('aVaults').doc(id);
 
@@ -185,7 +185,7 @@ const deleteAVault = (args, state) => {
   writeLn('Deleting A-vault...');
 };
 
-const deleteBVault = (args, state) => {
+const deleteBVault = async (args, state) => {
   const id = args[0];
   const vaultRef = db.collection('bVaults').doc(id);
 
@@ -198,7 +198,7 @@ const deleteBVault = (args, state) => {
   writeLn('Deleting B-vault...');
 };
 
-const join = (args, state) => {
+const join = async (args, state) => {
   if (state.uid === null) {
     write2Ln('Please login first.');
     return;
@@ -235,7 +235,7 @@ const join = (args, state) => {
   writeLn('Joining...');
 };
 
-const deposit = (args, state) => {
+const deposit = async (args, state) => {
   const payload = args[0];
   const { id, aOrB } = state;
 

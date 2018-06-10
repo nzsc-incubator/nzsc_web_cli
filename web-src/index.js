@@ -24,34 +24,34 @@ const main = async () => {
       case '':
         break;
       case 'login':
-        commands.login(args, state);
+        await commands.login(args, state);
         break;
       case 'create':
-        commands.create(args, state);
+        await commands.create(args, state);
         break;
       case 'set':
-        commands.set(args, state);
+        await commands.set(args, state);
         break;
       case 'get':
-        commands.get(args, state);
+        await commands.get(args, state);
         break;
       case 'delete':
-        commands.delete_(args, state);
+        await commands.delete_(args, state);
         break;
       case 'delete-guardian':
-        commands.deleteGuardian(args, state);
+        await commands.deleteGuardian(args, state);
         break;
       case 'delete-a-vault':
-        commands.deleteAVault(args, state);
+        await commands.deleteAVault(args, state);
         break;
       case 'delete-b-vault':
-        commands.deleteBVault(args, state);
+        await commands.deleteBVault(args, state);
         break;
       case 'join':
-        commands.join(args, state);
+        await commands.join(args, state);
         break;
       case 'deposit':
-        commands.deposit(args, state);
+        await commands.deposit(args, state);
         break;
       default:
         write2Ln(commandName + ' is not a command.');
