@@ -12,6 +12,9 @@ const main = async () => {
     id: null,
   };
 
+  // Since we're using anonymous auth, we might as well automate it.
+  commands.login([], state);
+
   while (true) {
     const input = await read();
     const [commandName, ...args] = input.split(' ');
