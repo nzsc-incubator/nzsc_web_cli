@@ -1,6 +1,7 @@
 import { writeLn, write2Ln, writeJsonLn, writeJson2Ln, read } from './io';
 import firebase from './firebase';
 import * as firehelpers from './firehelpers';
+import help from './help';
 
 // Constants
 
@@ -329,6 +330,15 @@ const deposit = async ([payload], state) => {
   }
 };
 
+const helpCommand = async (args, state) => {
+  const [commandName] = args;
+  if (commandName) {
+    help.withCommand(commandName);
+  } else {
+    help.listCommands();
+  }
+};
+
 export {
   login,
   create,
@@ -337,4 +347,5 @@ export {
   delete_,
   join,
   deposit,
+  helpCommand as help,
 };

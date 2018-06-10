@@ -4,6 +4,7 @@ const input = document.getElementById('terminal-input');
 const output = document.getElementById('terminal-output');
 
 const write = (content, className) => {
+  content = content.replace(/</g, '&lt;').replace(/>/g, '&gt;');
   if (className) {
     content = '<span class="' + className + '">' + content + '</span>';
   }

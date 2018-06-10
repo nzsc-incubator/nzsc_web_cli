@@ -1,7 +1,7 @@
 import { NZSCTwoPlayerGameWebInterface } from './wasm/nzsc_web_cli';
 
 import * as commands from './commands';
-import { read, write2Ln } from './io';
+import { read, writeLn, write2Ln } from './io';
 
 write2Ln('Welcome to NZSC Two-player!');
 
@@ -24,11 +24,27 @@ const main = async () => {
     switch (commandName) {
       case '':
         break;
-      case 'login':
-        await commands.login(args, state);
-        break;
+
+      // Porcelain
       case 'create':
         await commands.create(args, state);
+        break;
+      case 'join':
+        await commands.join(args, state);
+        break;
+      case 'delete':
+        await commands.delete_(args, state);
+        break;
+      case 'deposit':
+        await commands.deposit(args, state);
+        break;
+      case 'help':
+        await commands.help(args, state);
+        break;
+
+      // Plumbing
+      case 'login':
+        await commands.login(args, state);
         break;
       case 'set':
         await commands.set(args, state);
@@ -36,17 +52,10 @@ const main = async () => {
       case 'get':
         await commands.get(args, state);
         break;
-      case 'delete':
-        await commands.delete_(args, state);
-        break;
-      case 'join':
-        await commands.join(args, state);
-        break;
-      case 'deposit':
-        await commands.deposit(args, state);
-        break;
+
       default:
-        write2Ln(commandName + ' is not a command.');
+        writeLn(commandName + ' is not a command.');
+        write2Ln('For help, type "help".');
     }
   }
 };
