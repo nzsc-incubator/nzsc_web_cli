@@ -138,7 +138,6 @@ const delete_ = (args, state) => {
 
     writeLn('Deleting A-vault...');
   } else if (state.aOrB === B) {
-    const id = args[0];
     const vaultRef = db.collection('bVaults').doc(id);
 
     vaultRef.delete().then(() => {
