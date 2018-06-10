@@ -7,9 +7,9 @@ const list = async () => {
     if (docs.length > 0) {
       writeLn('Open game rooms:', SUCCESS);
       docs.forEach((doc) => {
-        writeLn(doc.id);
-        writeLn('');
+        writeLn('\t' + doc.id);
       });
+      writeLn('');
     } else {
       writeLn('There are no open game rooms.');
       write2Ln('You can create your own with "create <gameRoomName>"');
