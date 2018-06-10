@@ -1,6 +1,6 @@
-import { writeLn, write2Ln } from './io';
+import { writeLn, write2Ln } from '../io';
 
-const withCommand = (commandName) => {
+const helpWithCommand = (commandName) => {
   switch (commandName) {
     case 'list':
       writeLn('Usage:');
@@ -49,7 +49,7 @@ const withCommand = (commandName) => {
   }
 };
 
-const listCommands = () => {
+const listAllCommands = () => {
   write2Ln('Syntax: <command> <arg0> <arg1> <arg2> ...<argN>');
   writeLn('"Porcelain" Commands:');
 
@@ -79,7 +79,13 @@ const listCommands = () => {
   write2Ln('For more help with a specific command, type "help <command>".');
 };
 
-export default {
-  withCommand,
-  listCommands,
+const help = async (args) => {
+  const [commandName] = args;
+  if (commandName) {
+    helpWithCommand(commandName);
+  } else {
+    listAllCommands();
+  }
 };
+
+export default help;

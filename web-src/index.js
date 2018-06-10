@@ -1,6 +1,6 @@
 import { NZSCTwoPlayerGameWebInterface } from './wasm/nzsc_web_cli';
 
-import * as commands from './commands';
+import * as commands from './commands/index';
 import { read, writeLn, write2Ln } from './io';
 
 const ERROR = 'terminal-error';

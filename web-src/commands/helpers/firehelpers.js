@@ -1,24 +1,5 @@
-import firebase from './firebase';
-import { write2Ln } from './io';
-
-const db = firebase.firestore();
-
-const A = 'A';
-const B = 'B';
-
-const NONE_CREATED = 0;
-const A_CREATED = 1;
-const B_CREATED = 2;
-const NONE_SEALED = 3;
-const A_SEALED = 4;
-const B_SEALED = 5;
-const NONE_VIEWED = 6;
-const A_VIEWED = 7;
-const B_VIEWED = 8;
-
-const ERROR = 'terminal-error';
-const SUCCESS = 'terminal-success';
-const PENDING = 'terminal-pending';
+import { write2Ln } from '../../io';
+import { db, A, A_SEALED, B_SEALED, NONE_VIEWED, A_VIEWED, B_VIEWED, NONE_SEALED, ERROR, SUCCESS } from './consts';
 
 const seal = async (id, aOrB) => {
   const guardianRef = db.collection('guardians').doc(id);
