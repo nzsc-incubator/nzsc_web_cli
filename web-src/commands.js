@@ -92,11 +92,13 @@ const login = async (args, state) => {
   });
 
   firebase.auth().onAuthStateChanged((user) => {
-    if (args[0] !== 'silent-success') {
-      if (user === null) {
+    if (user === null) {
+      if (args[0] !== 'silent-success') {
         write2Ln('You are not signed in yet...', PENDING);
-      } else {
-        state.uid = user.uid;
+      }
+    } else {
+      state.uid = user.uid;
+      if (args[0] !== 'silent-success') {
         write2Ln('Your uid is: ' + user.uid);
       }
     }
