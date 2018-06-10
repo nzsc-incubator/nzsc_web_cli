@@ -14,7 +14,7 @@ const main = async () => {
   };
 
   // Since we're using anonymous auth, we might as well automate it.
-  commands.login([], state);
+  commands.login(['silent-success'], state);
 
   while (true) {
     const input = await read();

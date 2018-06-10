@@ -85,18 +85,20 @@ const addGuardianObserver = async (id, aOrB, state) => {
 
 // Commands
 
-const login = async (_args, state) => {
+const login = async (args, state) => {
   firebase.auth().signInAnonymously().catch((error) => {
     console.log('Unexpected sign-in error:', error);
     write2Ln('Failed to sign in.', ERROR);
   });
 
   firebase.auth().onAuthStateChanged((user) => {
-    if (user === null) {
-      write2Ln('You are not signed in yet...', PENDING);
-    } else {
-      state.uid = user.uid;
-      write2Ln('Your uid is: ' + user.uid);
+    if (args[0] !== 'silent-success') {
+      if (user === null) {
+        write2Ln('You are not signed in yet...', PENDING);
+      } else {
+        state.uid = user.uid;
+        write2Ln('Your uid is: ' + user.uid);
+      }
     }
   });
 };
