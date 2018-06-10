@@ -42,14 +42,14 @@ const addGuardianObserver = async (id, aOrB, state) => {
 
       const guardianData = guardianDoc.data();
       state.state = guardianData.state;
-      write2Ln('Guardian state is now: ' + guardianData.state);
+      // write2Ln('Guardian state is now: ' + guardianData.state);
 
       if (guardianData.state === NONE_VIEWED) {
         writeLn('Results are in...', PENDING);
         Promise.all([avRef.get(), bvRef.get()]).then(([aDoc, bDoc]) => {
           const aPayload = aDoc.data().payload;
           const bPayload = bDoc.data().payload;
-          
+
           if (aOrB === A) {
             writeLn('You chose ' + aPayload, SUCCESS);
             write2Ln('Your opponent chose ' + bPayload, SUCCESS);
