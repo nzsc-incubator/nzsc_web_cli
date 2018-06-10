@@ -4,8 +4,9 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "predeploy": "npm run build-release",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
+    "force-deploy": "gh-pages -d build",
     "dev": "sh scripts/dev.sh",
     "build": "sh scripts/build.sh",
     "lint": "eslint web-src/"
