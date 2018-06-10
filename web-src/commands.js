@@ -1,5 +1,6 @@
 import { writeLn, write2Ln, writeJsonLn, writeJson2Ln, read } from './io';
 import firebase from './firebase';
+import * as firehelpers from './firehelpers';
 
 // Constants
 
@@ -17,6 +18,11 @@ const B_SEALED = 5;
 const NONE_VIEWED = 6;
 const A_VIEWED = 7;
 const B_VIEWED = 8;
+
+const ERROR = {
+  bg: '#111',
+  text: '#C00',
+};
 
 // Misc
 
@@ -235,12 +241,11 @@ const join = async (args, state) => {
   writeLn('Joining...');
 };
 
-const deposit = async (args, state) => {
-  const payload = args[0];
+const deposit = async ([payload], state) => {
   const { id, aOrB } = state;
 
   if (id === null || aOrB === null) {
-    write2Ln('You are not associated with a game.');
+    write2Ln('You are not in a game.');
     return;
   }
 
@@ -249,129 +254,19 @@ const deposit = async (args, state) => {
     ? db.collection('aVaults').doc(id)
     : db.collection('bVaults').doc(id);
 
-  vaultRef.update({
-    payload,
-  }).then(() => {
-    writeLn('Successfully deposited ' + payload + ' in ' + id);
+  try {
+    await vaultRef.update({
+      payload,
+    });
+    
+    writeLn('Successfully deposited ' + payload);
     writeLn('Sealing...');
 
-    guardianRef.get().then((guardianDoc) => {
-      const guardianData = guardianDoc.data();
-      if (guardianData.state === NONE_SEALED) {
-        guardianRef.update({
-          state: aOrB === A ? A_SEALED : B_SEALED,
-        }).then(() => {
-          write2Ln('Successfully sealed ' + id);
-
-          const unsubscribe = guardianRef.onSnapshot((guardianDoc) => {
-            if (guardianDoc.data().state !== NONE_VIEWED) {
-              return;
-            }
-
-            unsubscribe();
-
-            writeLn('Results are in!');
-            const aVaultRef = db.collection('aVaults').doc(id);
-            const bVaultRef = db.collection('bVaults').doc(id);
-            const waitForBothToFinish = Promise.all([aVaultRef.get(), bVaultRef.get()]);
-            waitForBothToFinish.then(([aDoc, bDoc]) => {
-              if (state.aOrB === A) {
-                writeLn('You chose ' + aDoc.data().payload);
-                writeLn('Your opponent chose ' + bDoc.data().payload);
-              } else {
-                writeLn('You chose ' + bDoc.data().payload);
-                writeLn('Your opponent chose ' + aDoc.data().payload);
-              }
-
-              writeLn('Updating guardian...');
-
-              guardianRef.get().then((guardianDoc) => {
-                if (guardianDoc.data().state === NONE_VIEWED) {
-                  guardianRef.update({
-                    state: state.aOrB === A ? A_VIEWED : B_VIEWED,
-                  }).then(() => {
-                    write2Ln('Updated guardian.');
-                  }).catch((e) => {
-                    write2Ln('Failed to update guardian.');
-                  });
-                } else {
-                  guardianRef.update({
-                    state: NONE_SEALED,
-                  }).then(() => {
-                    write2Ln('Updated guardian.');
-                  }).catch((e) => {
-                    write2Ln('Failed to update guardian.');
-                  });
-                }
-              }).catch((e) => {
-                write2Ln('Failed to update guardian.');
-              });
-            }).catch((e) => {
-              console.log(e);
-              write2Ln('Failed to read vaults.');
-            });
-          });
-        }).catch(() => {
-          write2Ln('Failed to seal ' + id);
-        });
-      } else {
-        guardianRef.update({
-          state: NONE_VIEWED,
-        }).then(() => {
-          write2Ln('Successfully sealed ' + id);
-
-          writeLn('Results are in!');
-          const aVaultRef = db.collection('aVaults').doc(id);
-          const bVaultRef = db.collection('bVaults').doc(id);
-          const waitForBothToFinish = Promise.all([aVaultRef.get(), bVaultRef.get()]);
-          waitForBothToFinish.then(([aDoc, bDoc]) => {
-            if (state.aOrB === A) {
-              writeLn('You chose ' + aDoc.data().payload);
-              writeLn('Your opponent chose ' + bDoc.data().payload);
-            } else {
-              writeLn('You chose ' + bDoc.data().payload);
-              writeLn('Your opponent chose ' + aDoc.data().payload);
-            }
-
-            writeLn('Updating guardian...');
-
-            guardianRef.get().then((guardianDoc) => {
-              if (guardianDoc.data().state === NONE_VIEWED) {
-                guardianRef.update({
-                  state: state.aOrB === A ? A_VIEWED : B_VIEWED,
-                }).then(() => {
-                  write2Ln('Updated guardian.');
-                }).catch((e) => {
-                  write2Ln('Failed to update guardian.');
-                });
-              } else {
-                guardianRef.update({
-                  state: NONE_SEALED,
-                }).then(() => {
-                  write2Ln('Updated guardian.');
-                }).catch((e) => {
-                  write2Ln('Failed to update guardian.');
-                });
-              }
-            }).catch((e) => {
-              write2Ln('Failed to update guardian.');
-            });
-          }).catch((e) => {
-            console.log(e);
-            write2Ln('Failed to read vaults.');
-          });
-        }).catch(() => {
-          write2Ln('Failed to seal ' + id);
-        });
-      }
-    }).catch((e) => {
-      write2Ln('Failed to seal ' + id);
-    });
-  }).catch((e) => {
-    write2Ln('Failed to deposit ' + payload + ' in ' + id);
-  });
-
-  writeLn('Depositing...');
+    await firehelpers.seal(id, aOrB);
+  } catch (e) {
+    writeLn('Failed to deposit ' + payload, ERROR);
+    write2Ln('This is probably because you sealed your vault.');
+  }
 };
 
 export {
