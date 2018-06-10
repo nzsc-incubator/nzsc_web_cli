@@ -1,0 +1,16 @@
+[package]
+name = "nzsc_web_cli"
+version = "0.1.0"
+authors = ["Kyle Lin <kylejlin.us@gmail.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.4"
+nzsc2p = "0.2.0"
+nzsc2p_json_interface = "0.1.0"
+
+[profile.release]
+lto = true
+opt-level = "z"

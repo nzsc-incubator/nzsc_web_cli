@@ -1,0 +1,38 @@
+body {
+  background-color: #F1F1F1;
+}
+#terminal-container {
+  background-color: #FFF;
+
+  width: 92vw;
+  height: 92vh;
+
+  margin: 2vh 2vw 2vh 2vw;
+
+  border-radius: 1vh;
+
+  padding: 2vh 2vw 2vh 2vw;
+
+  overflow: auto;
+
+  box-shadow: 0 0 3vh 0.1vh #000A;
+}
+
+#terminal-output, #terminal-input {
+  font-family: "Roboto Mono";
+  font-size: 2vh;
+}
+
+#terminal-output {
+  white-space: pre;
+}
+
+#terminal-input {
+  padding: 0;
+  margin: 0;
+
+  width: 100%;
+
+  border: none;
+  outline: none;
+}
