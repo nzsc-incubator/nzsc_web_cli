@@ -85,6 +85,26 @@ const addGuardianObserver = async (id, aOrB, state) => {
 
 // Commands
 
+const list = async (args, state) => {
+  const guardiansRef = db.collection('guardians');
+  guardiansRef.where('state', '==', A_CREATED).get().then(({ docs, }) => {
+    if (docs.length > 0) {
+      writeLn('Open game rooms:', SUCCESS);
+      docs.forEach((doc) => {
+        writeLn(doc.id);
+        writeLn('');
+      });
+    } else {
+      writeLn('There are no open game rooms.');
+      write2Ln('You can create your own with "create <gameId>"');
+    }
+  }).catch((e) => {
+    console.log('Unexpected list error: ', e);
+    write2Ln('Failed to list game rooms.', ERROR);
+  });
+  writeLn('Fetching...', PENDING);
+};
+
 const login = async (args, state) => {
   firebase.auth().signInAnonymously().catch((error) => {
     console.log('Unexpected sign-in error:', error);
@@ -344,6 +364,7 @@ const helpCommand = async (args, state) => {
 };
 
 export {
+  list,
   login,
   create,
   get,

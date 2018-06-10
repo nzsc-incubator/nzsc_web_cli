@@ -28,6 +28,9 @@ const main = async () => {
         break;
 
       // Porcelain
+      case 'list':
+        await commands.list(args, state);
+        break;
       case 'create':
         await commands.create(args, state);
         break;
