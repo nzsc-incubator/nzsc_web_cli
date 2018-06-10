@@ -3,6 +3,8 @@ import { NZSCTwoPlayerGameWebInterface } from './wasm/nzsc_web_cli';
 import * as commands from './commands';
 import { read, writeLn, write2Ln } from './io';
 
+const ERROR = 'terminal-error';
+
 write2Ln('Welcome to NZSC Two-player!');
 
 const main = async () => {
@@ -54,7 +56,7 @@ const main = async () => {
         break;
 
       default:
-        writeLn(commandName + ' is not a command.');
+        writeLn(commandName + ' is not a command.', ERROR);
         write2Ln('For help, type "help".');
     }
   }
