@@ -25,11 +25,44 @@ const PENDING = 'terminal-pending';
 
 // Misc
 
-const addGuardianObserver = async (guardianRef, id) => {
-  guardianRef.onSnapshot((guardianDoc) => {
-    const guardianData = guardianDoc.data();
-    write2Ln('Guardian state is now: ' + guardianData.state);
-  });
+const addGuardianObserver = async (id, aOrB, state) => {
+  const guardianRef = db.collection('guardians').doc(id);
+  const avRef = db.collection('aVaults').doc(id);
+  const bvRef = db.collection('bVaults').doc(id);
+
+  guardianRef.onSnapshot(
+    {
+      includeMetadataChanges: true,
+    },
+
+    (guardianDoc) => {
+      if (guardianDoc.metadata.hasPendingWrites || state.state === guardianDoc.data().state) {
+        return;
+      }
+
+      const guardianData = guardianDoc.data();
+      state.state = guardianData.state;
+      write2Ln('Guardian state is now: ' + guardianData.state);
+
+      if (guardianData.state === NONE_VIEWED) {
+        writeLn('Results are in...', PENDING);
+        Promise.all([avRef.get(), bvRef.get()]).then(([aDoc, bDoc]) => {
+          if (aOrB === A) {
+            writeLn('You chose ' + aDoc.data().payload, SUCCESS);
+            write2Ln('Your opponent chose ' + bDoc.data().payload, SUCCESS);
+          } else {
+            writeLn('You chose ' + bDoc.data().payload, SUCCESS);
+            write2Ln('Your opponent chose ' + aDoc.data().payload, SUCCESS);
+          }
+
+          firehelpers.acceptResults(id, aOrB);
+        }).catch((e) => {
+          console.log('Unexpected result fetching error: ', e);
+          write2Ln('Failed to get results.', ERROR);
+        });
+      }
+    }
+  );
 };
 
 // Commands
@@ -82,7 +115,7 @@ const create = async (args, state) => {
         writeLn('Updated guardian.', SUCCESS);
 
         write2Ln('Listening for changes...', PENDING);
-        addGuardianObserver(guardianRef, id);
+        addGuardianObserver(id, A, state);
       }).catch((e) => {
         console.log('Unexpected post-vault-creation guardian update error: ', e);
         writeLn('Failed to update guardian.', ERROR);
@@ -236,7 +269,7 @@ const join = async (args, state) => {
       writeLn('Updated guardian.', SUCCESS);
       write2Ln('Listening for changes...', PENDING);
 
-      addGuardianObserver(guardianRef, id);
+      addGuardianObserver(id, B, state);
     }).catch((e) => {
       console.log('Unexpected post-bvault-creation guardian-update error:', e);
       write2Ln('Failed to update guardian.', ERROR);
@@ -263,6 +296,8 @@ const deposit = async ([payload], state) => {
     : db.collection('bVaults').doc(id);
 
   try {
+    writeLn('Depositing...', PENDING);
+
     await vaultRef.update({
       payload,
     });
