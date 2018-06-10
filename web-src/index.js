@@ -1,4 +1,4 @@
-//import { NZSCTwoPlayerGameWebInterface } from './wasm/nzsc_web_cli';
+import { NZSCTwoPlayerGameWebInterface } from './wasm/nzsc_web_cli';
 
 import * as commands from './commands';
 import { read, write2Ln } from './io';
@@ -10,6 +10,7 @@ const main = async () => {
     uid: null,
     aOrB: null,
     id: null,
+    game: NZSCTwoPlayerGameWebInterface.new(),
   };
 
   // Since we're using anonymous auth, we might as well automate it.

@@ -47,12 +47,29 @@ const addGuardianObserver = async (id, aOrB, state) => {
       if (guardianData.state === NONE_VIEWED) {
         writeLn('Results are in...', PENDING);
         Promise.all([avRef.get(), bvRef.get()]).then(([aDoc, bDoc]) => {
+          const aPayload = aDoc.data().payload;
+          const bPayload = bDoc.data().payload;
+          
           if (aOrB === A) {
-            writeLn('You chose ' + aDoc.data().payload, SUCCESS);
-            write2Ln('Your opponent chose ' + bDoc.data().payload, SUCCESS);
+            writeLn('You chose ' + aPayload, SUCCESS);
+            write2Ln('Your opponent chose ' + bPayload, SUCCESS);
+
+            state.game.process_choice('A', aPayload);
+            state.game.process_choice('B', bPayload);
+            const result = JSON.parse(state.game.get_phase());
+
+            writeLn('You are A.');
+            writeJson2Ln(result);
           } else {
-            writeLn('You chose ' + bDoc.data().payload, SUCCESS);
-            write2Ln('Your opponent chose ' + aDoc.data().payload, SUCCESS);
+            writeLn('You chose ' + bPayload, SUCCESS);
+            write2Ln('Your opponent chose ' + aPayload, SUCCESS);
+
+            state.game.process_choice('A', aPayload);
+            state.game.process_choice('B', bPayload);
+            const result = JSON.parse(state.game.get_phase());
+
+            writeLn('You are B.');
+            writeJson2Ln(result);
           }
 
           firehelpers.acceptResults(id, aOrB);
