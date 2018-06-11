@@ -37,7 +37,7 @@
 /* eslint-disable indent, no-unused-vars, no-multiple-empty-lines, max-nested-callbacks, space-before-function-paren, quotes, comma-spacing */
 'use strict';
 
-var precacheConfig = [["0.bundle.js","87a6bd9b5314d73c03111a7603e86eb7"],["1.bundle.js","c5b8efd5449146fd1a7c9ce02f9eab44"],["158753f787a6de5048cb.module.wasm","d9cabb91f09e4aad9c6c748ddcf6c1f3"],["bundle.js","c1280136c4acb73760cf0280f51ecaed"],["index.css","3d5ee25b3cc8693bccf4ac1b63394c2d"],["index.html","0dcf2d8582d6d8175af763f9f3508bfc"]];
+var precacheConfig = [["0.bundle.js","87a6bd9b5314d73c03111a7603e86eb7"],["1.bundle.js","c5b8efd5449146fd1a7c9ce02f9eab44"],["158753f787a6de5048cb.module.wasm","d9cabb91f09e4aad9c6c748ddcf6c1f3"],["bundle.js","c1280136c4acb73760cf0280f51ecaed"],["index.css","3d5ee25b3cc8693bccf4ac1b63394c2d"],["index.html","0ee989e13313dc9fa358a28b86a81bed"]];
 var cacheName = 'sw-precache-v3-sw-precache-webpack-plugin-' + (self.registration ? self.registration.scope : '');
 
 
