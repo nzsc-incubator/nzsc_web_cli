@@ -1,7 +1,7 @@
 import list from './list';
 import join from './join';
 import create from './create';
-import observeRoom from './observeRoom';
+import onTurnEnd from './onTurnEnd';
 import deposit from './deposit';
 import destroy from './destroy';
 import login from './login';
@@ -23,8 +23,8 @@ class Clownkit {
     return create(this.firebase, roomName);
   }
 
-  observeRoom(roomName, callback) {
-    return observeRoom(this.firebase, roomName, callback);
+  onTurnEnd(roomName, callback) {
+    return onTurnEnd(this.firebase, roomName, callback);
   }
 
   deposit(roomName, aOrB, payload) {

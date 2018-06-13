@@ -1,4 +1,4 @@
-const observeGuardian = (firebase, roomName, callback) => {
+const onTurnEnd = (firebase, roomName, callback) => {
   const db = firebase.firestore();
   const guardianRef = db.collection('guardians').doc(roomName);
   const avRef = db.collection('aVaults').doc(roomName);
@@ -26,4 +26,4 @@ const observeGuardian = (firebase, roomName, callback) => {
   return unsubscribe;
 };
 
-export default observeGuardian;
+export default onTurnEnd;
