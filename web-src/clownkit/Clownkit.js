@@ -2,6 +2,7 @@ import list from './list';
 import join from './join';
 import create from './create';
 import onTurnEnd from './onTurnEnd';
+import waitForRoomToBeFull from './waitForRoomToBeFull';
 import deposit from './deposit';
 import destroy from './destroy';
 import login from './login';
@@ -21,6 +22,10 @@ class Clownkit {
 
   create(roomName) {
     return create(this.firebase, roomName);
+  }
+
+  waitForRoomToBeFull(roomName) {
+    return waitForRoomToBeFull(this.firebase, roomName);
   }
 
   onTurnEnd(roomName, callback) {

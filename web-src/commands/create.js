@@ -1,6 +1,6 @@
 import { writeLn, write2Ln } from '../io';
 import { A, ERROR, SUCCESS, PENDING } from './helpers/consts';
-import createCallbackFor from './helpers/createCallbackFor';
+import createTurnEndListenerFor from './helpers/createTurnEndListenerFor';
 import clownkit from '../clownkit/index';
 
 const create = async (args, state) => {
@@ -31,7 +31,7 @@ const create = async (args, state) => {
 
   try {
     writeLn('Adding listener...', PENDING);
-    clownkit.observeRoom(roomName, createCallbackFor(A, state));
+    clownkit.onTurnEnd(roomName, createTurnEndListenerFor(A, state));
     writeLn('Added listener.', SUCCESS);
   } catch (e) {
     console.log('Unexpected create error: ', e.raw);
@@ -40,6 +40,12 @@ const create = async (args, state) => {
   } finally {
     writeLn('');
   }
+
+  clownkit.waitForRoomToBeFull(roomName).then(() => {
+    writeLn('Somebody joined your game room!');
+    writeLn('You can now begin the game!');
+    writeLn('');
+  });
 };
 
 export default create;

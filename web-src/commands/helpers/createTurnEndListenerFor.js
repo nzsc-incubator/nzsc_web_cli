@@ -1,7 +1,7 @@
 import { writeLn, writeJsonLn } from '../../io';
 import { A, B } from './consts';
 
-const createCallbackFor = (aOrB, state) => (aPayload, bPayload) => {
+const createTurnEndListenerFor = (aOrB, state) => (aPayload, bPayload) => {
   if (![A, B].includes(aOrB)) {
     throw new TypeError('aOrB must be "A" or "B"');
   }
@@ -28,4 +28,4 @@ const createCallbackFor = (aOrB, state) => (aPayload, bPayload) => {
   writeLn('');
 };
 
-export default createCallbackFor;
+export default createTurnEndListenerFor;
