@@ -1,44 +1,51 @@
 import { writeLn, write2Ln } from '../io';
-import { db, NONE_SEALED, B, ERROR, SUCCESS, PENDING } from './helpers/consts';
-import addGuardianObserver from './helpers/addGuardianObserver';
+import { B, ERROR, SUCCESS, PENDING } from './helpers/consts';
+import clownkit from '../clownkit/index';
 
 const join = async (args, state) => {
-  if (state.uid === null) {
+  if (!state.isLoggedIn) {
     write2Ln('Please login first.');
     return;
   }
 
-  const id = args[0];
-  const guardianRef = db.collection('guardians').doc(id);
-  const vaultRef = db.collection('bVaults').doc(id);
+  const roomName = args[0];
 
-  vaultRef.set({
-    owner: state.uid,
-    payload: ''
-  }).then(() => {
-    writeLn('Successfully joined ' + id, SUCCESS);
-    writeLn('Updating guardian...', PENDING);
-
-    state.id = id;
+  try {
+    writeLn('Joining ' + roomName + '...', PENDING);
+    await clownkit.join(roomName);
+    state.roomName = roomName;
     state.aOrB = B;
+    // TODO listeners
+    writeLn('Joined ' + roomName + '.', SUCCESS);
+  } catch (e) {
+    writeLn('Failed to join ' + roomName + '.', ERROR);
+    if (e.isExpected) {
+      writeLn('This is probably because the game room does not exist.');
+      writeLn('It is also possible that the game room exists, but is full.');
+      writeLn('You can create your own game room with "create <gameRoomName>".');
+    } else {
+      writeLn('We don\'t know what happened. Sorry.');
+    }
+  } finally {
+    writeLn('');
+  }
 
-    guardianRef.update({
-      state: NONE_SEALED,
-    }).then(() => {
-      writeLn('Updated guardian.', SUCCESS);
-      write2Ln('Listening for changes...', PENDING);
-
-      addGuardianObserver(id, B, state);
-    }).catch((e) => {
-      console.log('Unexpected post-bvault-creation guardian-update error:', e);
-      write2Ln('Failed to update guardian.', ERROR);
+  try {
+    writeLn('Adding listener...', PENDING);
+    clownkit.observeRoom(roomName, (aPayload, bPayload) => {
+      writeLn('Results are in:');
+      writeLn('You chose ' + bPayload + '.');
+      writeLn('Your opponent chose ' + aPayload + '.');
+      writeLn('');
     });
-  }).catch(() => {
-    writeLn('Failed to join: ' + id, ERROR);
-    write2Ln('This is probably because the game either is full or does not exist.');
-  });
-
-  writeLn('Joining...', PENDING);
+    writeLn('Added listener.', SUCCESS);
+  } catch (e) {
+    console.log('Unexpected create error: ', e.raw);
+    writeLn('Failed to add listener.', ERROR);
+    writeLn('We don\'t know what happened. Sorry.');
+  } finally {
+    writeLn('');
+  }
 };
 
 export default join;

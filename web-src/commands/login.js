@@ -1,25 +1,23 @@
-import firebase from '../firebase';
-import { write2Ln } from '../io';
+import { writeLn } from '../io';
 import { ERROR, PENDING } from './helpers/consts';
+import clownkit from '../clownkit/index';
 
 const login = async (args, state) => {
-  firebase.auth().signInAnonymously().catch((error) => {
-    console.log('Unexpected sign-in error:', error);
-    write2Ln('Failed to sign in.', ERROR);
-  });
+  const isSuccessSilent = args[0] === 'silent-success';
 
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user === null) {
-      if (args[0] !== 'silent-success') {
-        write2Ln('You are not signed in yet...', PENDING);
-      }
-    } else {
-      state.uid = user.uid;
-      if (args[0] !== 'silent-success') {
-        write2Ln('Your uid is: ' + user.uid);
-      }
-    }
-  });
+  if (!isSuccessSilent) {
+    writeLn('Logging in...', PENDING);
+  }
+
+  try {
+    await clownkit.login();
+    state.isLoggedIn = true;
+  } catch {
+    writeLn('Failed to login.', ERROR);
+    writeLn('We don\'t know what happened. Sorry.');
+  } finally {
+    writeLn('');
+  }
 };
 
 export default login;

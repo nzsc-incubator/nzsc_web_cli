@@ -1,7 +1,7 @@
 export { default as list } from './list';
 export { default as create } from './create';
 export { default as join } from './join';
-export { default as delete_ } from './delete';
+export { default as destroy } from './destroy';
 export { default as deposit } from './deposit';
 export { default as help } from './help';
 

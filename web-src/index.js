@@ -9,9 +9,9 @@ write2Ln('Welcome to NZSC Two-player!');
 
 const main = async () => {
   const state = {
-    uid: null,
+    isLoggedIn: false,
     aOrB: null,
-    id: null,
+    roomName: null,
     game: NZSCTwoPlayerGameWebInterface.new(),
   };
 
@@ -37,8 +37,8 @@ const main = async () => {
       case 'join':
         await commands.join(args, state);
         break;
-      case 'delete':
-        await commands.delete_(args, state);
+      case 'destroy':
+        await commands.destroy(args, state);
         break;
       case 'deposit':
         await commands.deposit(args, state);

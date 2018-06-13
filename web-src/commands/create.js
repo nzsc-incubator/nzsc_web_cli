@@ -1,53 +1,49 @@
 import { writeLn, write2Ln } from '../io';
-import { db, A, NONE_CREATED, A_CREATED, ERROR, SUCCESS, PENDING } from './helpers/consts';
-import addGuardianObserver from './helpers/addGuardianObserver';
+import { A, ERROR, SUCCESS, PENDING } from './helpers/consts';
+import clownkit from '../clownkit/index';
+
 const create = async (args, state) => {
-  if (state.uid === null) {
+  if (!state.isLoggedIn) {
     write2Ln('Please login first.', ERROR);
     return;
   }
 
-  const id = args[0];
-  const guardianRef = db.collection('guardians').doc(id);
-  const vaultRef = db.collection('aVaults').doc(id);
+  const roomName = args[0];
 
-  guardianRef.set({
-    state: NONE_CREATED
-  }).then(() => {
-    writeLn('Created guardian ' + id, SUCCESS);
-    writeLn('Creating A-vault...', PENDING);
+  try {
+    writeLn('Creating game room ' + roomName + '...', PENDING);
+    await clownkit.create(roomName);
+    state.roomName = roomName;
+    state.aOrB = A;
+    writeLn('Created game room ' + roomName + '.', SUCCESS);
+  } catch (e) {
+    writeLn('Failed to create game room ' + roomName + '.', ERROR);
+    if (e.isExpected) {
+      writeLn('This is probably because that name (' +  ') is already taken.');
+    } else {
+      console.log('Unexpected create error: ', e.raw);
+      writeLn('We don\'t know what happened. Sorry.');
+    }
+  } finally {
+    writeLn('');
+  }
 
-    vaultRef.set({
-      owner: state.uid,
-      payload: ''
-    }).then(() => {
-      writeLn('Created A-vault ' + id, SUCCESS);
-      writeLn('Updating guardian...', PENDING);
-
-      state.aOrB = A;
-      state.id = id;
-
-      guardianRef.update({
-        state: A_CREATED
-      }).then(() => {
-        writeLn('Updated guardian.', SUCCESS);
-
-        write2Ln('Listening for changes...', PENDING);
-        addGuardianObserver(id, A, state);
-      }).catch((e) => {
-        console.log('Unexpected post-vault-creation guardian update error: ', e);
-        writeLn('Failed to update guardian.', ERROR);
-      });
-    }).catch((e) => {
-      console.log('Unexpected vault-creation error', e);
-      write2Ln('Failed to create A-vault.');
+  try {
+    writeLn('Adding listener...', PENDING);
+    clownkit.observeRoom(roomName, (aPayload, bPayload) => {
+      writeLn('Results are in:');
+      writeLn('You chose ' + aPayload + '.');
+      writeLn('Your opponent chose ' + bPayload + '.');
+      writeLn('');
     });
-  }).catch(() => {
-    writeLn('Failed to create guardian: ' + id, ERROR);
-    write2Ln('This is probably because it already exists.');
-  });
-
-  writeLn('Creating guardian...', PENDING);
+    writeLn('Added listener.', SUCCESS);
+  } catch (e) {
+    console.log('Unexpected create error: ', e.raw);
+    writeLn('Failed to add listener.', ERROR);
+    writeLn('We don\'t know what happened. Sorry.');
+  } finally {
+    writeLn('');
+  }
 };
 
 export default create;

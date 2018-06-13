@@ -1,24 +1,28 @@
-import { writeLn, write2Ln } from '../io';
-import { db, A_CREATED, ERROR, SUCCESS, PENDING } from './helpers/consts';
+import { writeLn } from '../io';
+import { ERROR, SUCCESS, PENDING } from './helpers/consts';
+import clownkit from '../clownkit/index';
 
 const list = async () => {
-  const guardiansRef = db.collection('guardians');
-  guardiansRef.where('state', '==', A_CREATED).get().then(({ docs, }) => {
-    if (docs.length > 0) {
-      writeLn('Open game rooms:', SUCCESS);
-      docs.forEach((doc) => {
-        writeLn('\t' + doc.id);
+  try {
+    writeLn('Fetching open game rooms...', PENDING);
+    const gameRoomNames = await clownkit.list();
+    writeLn('Fetched open game rooms.', SUCCESS);
+
+    if (gameRoomNames.length > 0) {
+      writeLn('Open game room names:');
+      gameRoomNames.forEach((name) => {
+        writeLn('\t' + name);
       });
-      writeLn('');
     } else {
-      writeLn('There are no open game rooms.');
-      write2Ln('You can create your own with "create <gameRoomName>"');
+      writeLn('There are no open game rooms right now.');
+      writeLn('You can create your own game room by typing "create <gameRoomName>".');
     }
-  }).catch((e) => {
-    console.log('Unexpected list error: ', e);
-    write2Ln('Failed to list game rooms.', ERROR);
-  });
-  writeLn('Fetching...', PENDING);
+  } catch {
+    writeLn('Failed to fetch open game rooms.', ERROR);
+    writeLn('We don\'t know what happened. Sorry.');
+  } finally {
+    writeLn('');
+  }
 };
 
 export default list;

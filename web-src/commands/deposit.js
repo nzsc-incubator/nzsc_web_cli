@@ -1,33 +1,28 @@
 import { writeLn, write2Ln } from '../io';
-import { db, A, ERROR, SUCCESS, PENDING } from './helpers/consts';
-import * as firehelpers from './helpers/firehelpers';
+import { A, B, ERROR, SUCCESS, PENDING } from './helpers/consts';
+import clownkit from '../clownkit/index';
 
 const deposit = async ([payload], state) => {
-  const { id, aOrB } = state;
+  const { roomName, aOrB } = state;
 
-  if (id === null || aOrB === null) {
+  if (roomName === null || ![A, B].includes(aOrB)) {
     write2Ln('You are not in a game.', ERROR);
     return;
   }
 
-  const vaultRef = aOrB === A
-    ? db.collection('aVaults').doc(id)
-    : db.collection('bVaults').doc(id);
-
   try {
-    writeLn('Depositing...', PENDING);
-
-    await vaultRef.update({
-      payload,
-    });
-
-    writeLn('Successfully deposited ' + payload, SUCCESS);
-    writeLn('Sealing...', PENDING);
-
-    await firehelpers.seal(id, aOrB);
+    writeLn('Depositing ' + payload + '...', PENDING);
+    await clownkit.deposit(roomName, aOrB, payload);
+    writeLn('Deposited ' + payload + '.', SUCCESS);
   } catch (e) {
-    writeLn('Failed to deposit ' + payload, ERROR);
-    write2Ln('This is probably because you sealed your vault.');
+    writeLn('Failed to deposit ' + payload + '.', ERROR);
+    if (e.isExpected) {
+      writeLn('This is probably because you have already deposited this turn.');
+    } else {
+      writeLn('We don\'t know what happened. Sorry.');
+    }
+  } finally {
+    writeLn('');
   }
 };
 
