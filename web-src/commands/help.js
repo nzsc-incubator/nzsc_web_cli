@@ -18,11 +18,12 @@ const helpWithCommand = (commandName) => {
       writeLn('Join the game room that has the given name.');
       write2Ln('Will throw an error if there exists no game room with the given gameId.');
       break;
-    case 'delete':
+    case 'destroy':
       writeLn('Usage:');
-      write2Ln('delete');
+      write2Ln('destroy');
       writeLn('Deletes the game room you are in.');
       write2Ln('May fail if somebody else is still in the game room.');
+      writeLn('You should ALWAYS type this command before closing the page.');
       break;
     case 'deposit':
       writeLn('Usage:');
@@ -57,7 +58,7 @@ const listAllCommands = () => {
     'list',
     'create <gameRoomName>',
     'join <gameRoomName>',
-    'delete',
+    'destroy',
     'deposit <item>',
     'help <command>'
   ].forEach((commandName) => {
