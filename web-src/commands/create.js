@@ -17,6 +17,7 @@ const create = async (args, state) => {
     state.roomName = roomName;
     state.aOrB = A;
     writeLn('Created game room ' + roomName + '.', SUCCESS);
+    writeLn('');
   } catch (e) {
     writeLn('Failed to create game room ' + roomName + '.', ERROR);
     if (e.isExpected) {
@@ -25,20 +26,21 @@ const create = async (args, state) => {
       console.log('Unexpected create error: ', e.raw);
       writeLn('We don\'t know what happened. Sorry.');
     }
-  } finally {
     writeLn('');
+    return;
   }
 
   try {
     writeLn('Adding listener...', PENDING);
     clownkit.onTurnEnd(roomName, createTurnEndListenerFor(A, state));
     writeLn('Added listener.', SUCCESS);
+    writeLn('');
   } catch (e) {
     console.log('Unexpected create error: ', e.raw);
     writeLn('Failed to add listener.', ERROR);
     writeLn('We don\'t know what happened. Sorry.');
-  } finally {
     writeLn('');
+    return;
   }
 
   clownkit.waitForRoomToBeFull(roomName).then(() => {

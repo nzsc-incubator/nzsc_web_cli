@@ -18,6 +18,7 @@ const join = async (args, state) => {
     state.roomName = roomName;
     state.aOrB = B;
     writeLn('Joined ' + roomName + '.', SUCCESS);
+    writeLn('');
   } catch (e) {
     writeLn('Failed to join ' + roomName + '.', ERROR);
     if (e.isExpected) {
@@ -27,8 +28,8 @@ const join = async (args, state) => {
     } else {
       writeLn('We don\'t know what happened. Sorry.');
     }
-  } finally {
     writeLn('');
+    return;
   }
 
   try {
