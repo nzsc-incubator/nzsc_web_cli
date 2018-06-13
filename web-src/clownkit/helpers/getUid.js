@@ -1,5 +1,5 @@
 const getUid = (firebase) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         resolve(user.uid);

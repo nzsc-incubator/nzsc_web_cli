@@ -1,10 +1,12 @@
-import { writeLn, write2Ln } from '../io';
+import { writeLn } from '../io';
 import { B, ERROR, SUCCESS, PENDING } from './helpers/consts';
+import createCallbackFor from './helpers/createCallbackFor';
 import clownkit from '../clownkit/index';
 
 const join = async (args, state) => {
   if (!state.isLoggedIn) {
-    write2Ln('Please login first.');
+    writeLn('Please login first.');
+    writeLn('');
     return;
   }
 
@@ -15,7 +17,6 @@ const join = async (args, state) => {
     await clownkit.join(roomName);
     state.roomName = roomName;
     state.aOrB = B;
-    // TODO listeners
     writeLn('Joined ' + roomName + '.', SUCCESS);
   } catch (e) {
     writeLn('Failed to join ' + roomName + '.', ERROR);
@@ -32,12 +33,7 @@ const join = async (args, state) => {
 
   try {
     writeLn('Adding listener...', PENDING);
-    clownkit.observeRoom(roomName, (aPayload, bPayload) => {
-      writeLn('Results are in:');
-      writeLn('You chose ' + bPayload + '.');
-      writeLn('Your opponent chose ' + aPayload + '.');
-      writeLn('');
-    });
+    clownkit.observeRoom(roomName, createCallbackFor(B, state));
     writeLn('Added listener.', SUCCESS);
   } catch (e) {
     console.log('Unexpected create error: ', e.raw);
