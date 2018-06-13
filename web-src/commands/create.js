@@ -20,7 +20,7 @@ const create = async (args, state) => {
   } catch (e) {
     writeLn('Failed to create game room ' + roomName + '.', ERROR);
     if (e.isExpected) {
-      writeLn('This is probably because that name (' +  ') is already taken.');
+      writeLn('This is probably because that name (' + roomName + ') is already taken.');
     } else {
       console.log('Unexpected create error: ', e.raw);
       writeLn('We don\'t know what happened. Sorry.');
