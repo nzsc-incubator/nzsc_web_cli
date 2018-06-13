@@ -32,7 +32,7 @@ const create = async (args, state) => {
 
   try {
     writeLn('Adding listener...', PENDING);
-    clownkit.onTurnEnd(roomName, createTurnEndListenerFor(A, state));
+    clownkit.onTurnEnd(roomName, createTurnEndListenerFor(A, state, roomName));
     writeLn('Added listener.', SUCCESS);
     writeLn('');
   } catch (e) {

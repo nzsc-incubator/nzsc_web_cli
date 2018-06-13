@@ -1,8 +1,9 @@
 import list from './list';
 import join from './join';
 import create from './create';
-import onTurnEnd from './onTurnEnd';
 import waitForRoomToBeFull from './waitForRoomToBeFull';
+import onTurnEnd from './onTurnEnd';
+import acceptResults from './acceptResults';
 import deposit from './deposit';
 import destroy from './destroy';
 import login from './login';
@@ -30,6 +31,10 @@ class Clownkit {
 
   onTurnEnd(roomName, callback) {
     return onTurnEnd(this.firebase, roomName, callback);
+  }
+
+  acceptResults(roomName, aOrB) {
+    return acceptResults(this.firebase, roomName, aOrB);
   }
 
   deposit(roomName, aOrB, payload) {

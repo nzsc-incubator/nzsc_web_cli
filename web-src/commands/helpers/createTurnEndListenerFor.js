@@ -1,7 +1,8 @@
 import { writeLn, writeJsonLn } from '../../io';
-import { A, B } from './consts';
+import { A, B, PENDING, SUCCESS, ERROR } from './consts';
+import clownkit from '../../clownkit/index';
 
-const createTurnEndListenerFor = (aOrB, state) => (aPayload, bPayload) => {
+const createTurnEndListenerFor = (aOrB, state, roomName) => async (aPayload, bPayload) => {
   if (![A, B].includes(aOrB)) {
     throw new TypeError('aOrB must be "A" or "B"');
   }
@@ -26,6 +27,17 @@ const createTurnEndListenerFor = (aOrB, state) => (aPayload, bPayload) => {
 
   writeJsonLn(result);
   writeLn('');
+
+  try {
+    writeLn('Accepting results...', PENDING);
+    await clownkit.acceptResults(roomName, aOrB);
+    writeLn('Accepted results.', SUCCESS);
+  } catch (e) {
+    writeLn('Failed to accept results.', ERROR);
+    console.log('Unexpected acceptance error: ', e);
+  } finally {
+    writeLn('');
+  }
 };
 
 export default createTurnEndListenerFor;

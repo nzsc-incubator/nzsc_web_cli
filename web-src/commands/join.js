@@ -34,7 +34,7 @@ const join = async (args, state) => {
 
   try {
     writeLn('Adding listener...', PENDING);
-    clownkit.onTurnEnd(roomName, createTurnEndListenerFor(B, state));
+    clownkit.onTurnEnd(roomName, createTurnEndListenerFor(B, state, roomName));
     writeLn('Added listener.', SUCCESS);
   } catch (e) {
     console.log('Unexpected create error: ', e.raw);
