@@ -106,6 +106,162 @@ eval("/* WEBPACK VAR INJECTION */(function(global) {(function() {var g,goog=goog
 
 /***/ }),
 
+/***/ "./node_modules/@nzsc/clownkit/src/Clownkit.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/Clownkit.js ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _list__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./list */ \"./node_modules/@nzsc/clownkit/src/list.js\");\n/* harmony import */ var _join__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./join */ \"./node_modules/@nzsc/clownkit/src/join.js\");\n/* harmony import */ var _create__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./create */ \"./node_modules/@nzsc/clownkit/src/create.js\");\n/* harmony import */ var _waitForRoomToBeFull__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./waitForRoomToBeFull */ \"./node_modules/@nzsc/clownkit/src/waitForRoomToBeFull.js\");\n/* harmony import */ var _onTurnEnd__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./onTurnEnd */ \"./node_modules/@nzsc/clownkit/src/onTurnEnd.js\");\n/* harmony import */ var _acceptResults__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./acceptResults */ \"./node_modules/@nzsc/clownkit/src/acceptResults.js\");\n/* harmony import */ var _deposit__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./deposit */ \"./node_modules/@nzsc/clownkit/src/deposit.js\");\n/* harmony import */ var _destroy__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./destroy */ \"./node_modules/@nzsc/clownkit/src/destroy.js\");\n/* harmony import */ var _login__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./login */ \"./node_modules/@nzsc/clownkit/src/login.js\");\n\n\n\n\n\n\n\n\n\n\nclass Clownkit {\n  constructor(firebase) {\n    this.firebase = firebase;\n  }\n\n  list() {\n    return Object(_list__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(this.firebase);\n  }\n\n  join(roomName) {\n    return Object(_join__WEBPACK_IMPORTED_MODULE_1__[\"default\"])(this.firebase, roomName);\n  }\n\n  create(roomName) {\n    return Object(_create__WEBPACK_IMPORTED_MODULE_2__[\"default\"])(this.firebase, roomName);\n  }\n\n  waitForRoomToBeFull(roomName) {\n    return Object(_waitForRoomToBeFull__WEBPACK_IMPORTED_MODULE_3__[\"default\"])(this.firebase, roomName);\n  }\n\n  onTurnEnd(roomName, callback) {\n    return Object(_onTurnEnd__WEBPACK_IMPORTED_MODULE_4__[\"default\"])(this.firebase, roomName, callback);\n  }\n\n  acceptResults(roomName, aOrB) {\n    return Object(_acceptResults__WEBPACK_IMPORTED_MODULE_5__[\"default\"])(this.firebase, roomName, aOrB);\n  }\n\n  deposit(roomName, aOrB, payload) {\n    return Object(_deposit__WEBPACK_IMPORTED_MODULE_6__[\"default\"])(this.firebase, roomName, aOrB, payload);\n  }\n\n  destroy(roomName, aOrB) {\n    return Object(_destroy__WEBPACK_IMPORTED_MODULE_7__[\"default\"])(this.firebase, roomName, aOrB);\n  }\n\n  login() {\n    Object(_login__WEBPACK_IMPORTED_MODULE_8__[\"default\"])(this.firebase);\n  }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Clownkit);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/Clownkit.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/acceptResults.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/acceptResults.js ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n\n\nconst acceptResults = async (firebase, roomName, aOrB) => {\n  if (![_helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A\"], _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"B\"]].includes(aOrB)) {\n    throw new TypeError('aOrB must be \"A\" or \"B\"');\n  }\n\n  const db = firebase.firestore();\n  const guardianRef = db.collection('guardians').doc(roomName);\n\n  try {\n    await guardianRef.update({\n      state: aOrB === _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A\"] ? _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A_VIEWED\"] : _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"B_VIEWED\"],\n    });\n  } catch {\n    try {\n      await guardianRef.update({\n        state: _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"NONE_SEALED\"],\n      });\n    } catch (e) {\n      throw {\n        isExpected: false,\n        raw: e,\n      };\n    }\n  }\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (acceptResults);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/acceptResults.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/create.js":
+/*!***************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/create.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n/* harmony import */ var _helpers_getUid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers/getUid */ \"./node_modules/@nzsc/clownkit/src/helpers/getUid.js\");\n\n\n\nconst create = async (firebase, roomName) => {\n  const db = firebase.firestore();\n  const guardianRef = db.collection('guardians').doc(roomName);\n  const vaultRef = db.collection('aVaults').doc(roomName);\n\n  try {\n    await guardianRef.set({\n      state: _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"NONE_CREATED\"]\n    });\n  } catch (e) {\n    throw {\n      isExpected: true,\n      raw: e,\n    }\n  }\n\n  try {\n    await vaultRef.set({\n      owner: await Object(_helpers_getUid__WEBPACK_IMPORTED_MODULE_1__[\"default\"])(firebase),\n      payload: ''\n    });\n    await guardianRef.update({\n      state: _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A_CREATED\"]\n    })\n  } catch (e) {\n    throw {\n      isExpected: false,\n      raw: e,\n    }\n  }\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (create);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/create.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/deposit.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/deposit.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n\n\nconst deposit = async (firebase, roomName, aOrB, payload) => {\n  if (![_helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A\"], _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"B\"]].includes(aOrB)) {\n    throw new TypeError('aOrB must be \"A\" or \"B\"');\n  }\n\n  const db = firebase.firestore();\n  const guardianRef = db.collection('guardians').doc(roomName);\n  const vaultRef = aOrB === _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A\"]\n    ? db.collection('aVaults').doc(roomName)\n    : db.collection('bVaults').doc(roomName);\n\n  try {\n    await vaultRef.update({\n      payload,\n    });\n  } catch {\n    throw {\n      isExpected: true,\n    };\n  }\n\n  try {\n    try {\n      await guardianRef.update({\n        state: aOrB === _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A\"] ? _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A_SEALED\"] : _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"B_SEALED\"],\n      });\n    } catch {\n      await guardianRef.update({\n        state: _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"NONE_VIEWED\"],\n      });\n    }\n  } catch {\n    throw {\n      isExpected: false,\n    };\n  }\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (deposit);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/deposit.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/destroy.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/destroy.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n\n\nconst destroy = async (firebase, roomName, aOrB) => {\n  if (![_helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A\"], _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"B\"]].includes(aOrB)) {\n    throw new TypeError('aOrB must be \"A\" or \"B\"');\n  }\n\n  const db = firebase.firestore();\n  const guardianRef = db.collection('guardians').doc(roomName);\n  const vaultRef = aOrB === _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A\"]\n    ? db.collection('aVaults').doc(roomName)\n    : db.collection('bVaults').doc(roomName);\n\n  try {\n    await vaultRef.delete();\n  } catch {\n    throw {\n      isExpected: false,\n    };\n  }\n\n  try {\n    await guardianRef.delete();\n  } catch {\n    throw {\n      isExpected: true,\n    };\n  }\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (destroy);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/destroy.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/helpers/consts.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/helpers/consts.js ***!
+  \***********************************************************/
+/*! exports provided: A, B, NONE_CREATED, A_CREATED, B_CREATED, NONE_SEALED, A_SEALED, B_SEALED, NONE_VIEWED, A_VIEWED, B_VIEWED */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"A\", function() { return A; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"B\", function() { return B; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"NONE_CREATED\", function() { return NONE_CREATED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"A_CREATED\", function() { return A_CREATED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"B_CREATED\", function() { return B_CREATED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"NONE_SEALED\", function() { return NONE_SEALED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"A_SEALED\", function() { return A_SEALED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"B_SEALED\", function() { return B_SEALED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"NONE_VIEWED\", function() { return NONE_VIEWED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"A_VIEWED\", function() { return A_VIEWED; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"B_VIEWED\", function() { return B_VIEWED; });\n// import firebase from '../../firebase';\n\n// export const db = firebase.firestore();\n\nconst A = 'A';\nconst B = 'B';\n\nconst NONE_CREATED = 0;\nconst A_CREATED = 1;\nconst B_CREATED = 2;\nconst NONE_SEALED = 3;\nconst A_SEALED = 4;\nconst B_SEALED = 5;\nconst NONE_VIEWED = 6;\nconst A_VIEWED = 7;\nconst B_VIEWED = 8;\n\n// export const ERROR = 'terminal-error';\n// export const SUCCESS = 'terminal-success';\n// export const PENDING = 'terminal-pending';\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/helpers/consts.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/helpers/getUid.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/helpers/getUid.js ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\nconst getUid = (firebase) => {\n  return new Promise((resolve) => {\n    firebase.auth().onAuthStateChanged((user) => {\n      if (user) {\n        resolve(user.uid);\n      }\n    });\n  })\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (getUid);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/helpers/getUid.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/index.js ***!
+  \**************************************************/
+/*! exports provided: Clownkit, consts */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, \"consts\", function() { return _helpers_consts__WEBPACK_IMPORTED_MODULE_0__; });\n/* harmony import */ var _Clownkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Clownkit */ \"./node_modules/@nzsc/clownkit/src/Clownkit.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"Clownkit\", function() { return _Clownkit__WEBPACK_IMPORTED_MODULE_1__[\"default\"]; });\n\n\n\n\n\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/join.js":
+/*!*************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/join.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n/* harmony import */ var _helpers_getUid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers/getUid */ \"./node_modules/@nzsc/clownkit/src/helpers/getUid.js\");\n\n\n\nconst join = async (firebase, roomName) => {\n  const db = firebase.firestore();\n  const guardianRef = db.collection('guardians').doc(roomName);\n  const vaultRef = db.collection('bVaults').doc(roomName);\n\n  try {\n    await vaultRef.set({\n      owner: await Object(_helpers_getUid__WEBPACK_IMPORTED_MODULE_1__[\"default\"])(firebase),\n      payload: ''\n    });\n  } catch {\n    throw {\n      isExpected: true,\n    }\n  }\n\n  try {\n    await guardianRef.update({\n      state: _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"NONE_SEALED\"],\n    });\n  } catch {\n    throw {\n      isExpected: false,\n    }\n  }\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (join);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/join.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/list.js":
+/*!*************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/list.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n\n\nconst list = async (firebase) => {\n  const db = firebase.firestore();\n  const guardiansRef = db.collection('guardians');\n  \n  try {\n    const { docs } = await guardiansRef.where('state', '==', _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A_CREATED\"]).get();\n    const roomNames = docs.map(doc => doc.id);\n    return roomNames;\n  } catch {\n    throw {\n      isExpected: false,\n    };\n  }\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (list);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/list.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/login.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/login.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\nconst login = async (firebase) => {\n  await firebase.auth().signInAnonymously();\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (login);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/login.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/onTurnEnd.js":
+/*!******************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/onTurnEnd.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n\n\nconst onTurnEnd = (firebase, roomName, callback) => {\n  const db = firebase.firestore();\n  const guardianRef = db.collection('guardians').doc(roomName);\n  const avRef = db.collection('aVaults').doc(roomName);\n  const bvRef = db.collection('bVaults').doc(roomName);\n\n  let cachedState = null;\n\n  const unsubscribe = guardianRef.onSnapshot(\n    {\n      includeMetadataChanges: true,\n    },\n\n    async (guardianDoc) => {\n      const { state } = guardianDoc.data();\n      if (guardianDoc.hasPendingWrites\n        || state === cachedState\n        || ![_helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"NONE_VIEWED\"], _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A_VIEWED\"], _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"B_VIEWED\"]].includes(state)\n      ) {\n        return;\n      }\n      const [aDoc, bDoc] = await Promise.all([avRef.get(), bvRef.get()]);\n\n\n      callback(aDoc.data().payload, bDoc.data().payload);\n    }\n  );\n\n  return unsubscribe;\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (onTurnEnd);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/onTurnEnd.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@nzsc/clownkit/src/waitForRoomToBeFull.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@nzsc/clownkit/src/waitForRoomToBeFull.js ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _helpers_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/consts */ \"./node_modules/@nzsc/clownkit/src/helpers/consts.js\");\n\n\nconst waitForRoomToBeFull = (firebase, roomName) => {\n  const db = firebase.firestore();\n  const guardianRef = db.collection('guardians').doc(roomName);\n\n  return new Promise((resolve) => {\n    guardianRef.onSnapshot(\n      (guardianDoc) => {\n        const { state } = guardianDoc.data();\n        if (![_helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"NONE_CREATED\"], _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"A_CREATED\"], _helpers_consts__WEBPACK_IMPORTED_MODULE_0__[\"B_CREATED\"]].includes(state)) {\n          resolve();\n        }\n      }\n    );\n  });\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (waitForRoomToBeFull);\n\n\n//# sourceURL=webpack:///./node_modules/@nzsc/clownkit/src/waitForRoomToBeFull.js?");
+
+/***/ }),
+
 /***/ "./node_modules/firebase/app/dist/index.cjs.js":
 /*!*****************************************************!*\
   !*** ./node_modules/firebase/app/dist/index.cjs.js ***!
