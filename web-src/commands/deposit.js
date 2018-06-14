@@ -1,6 +1,6 @@
 import { writeLn, write2Ln } from '../io';
 import { A, B, ERROR, SUCCESS, PENDING } from './helpers/consts';
-import clownkit from '../clownkit/index';
+import clownkit from '../clownkit';
 
 const deposit = async ([payload], state) => {
   const { roomName, aOrB } = state;

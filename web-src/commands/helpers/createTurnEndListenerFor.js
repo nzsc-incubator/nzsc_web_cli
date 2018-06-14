@@ -1,6 +1,6 @@
 import { writeLn, writeJsonLn } from '../../io';
 import { A, B, PENDING, SUCCESS, ERROR } from './consts';
-import clownkit from '../../clownkit/index';
+import clownkit from '../../clownkit';
 
 const createTurnEndListenerFor = (aOrB, state, roomName) => async (aPayload, bPayload) => {
   if (![A, B].includes(aOrB)) {

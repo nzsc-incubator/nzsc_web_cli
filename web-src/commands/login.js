@@ -1,6 +1,6 @@
 import { writeLn } from '../io';
 import { ERROR, PENDING } from './helpers/consts';
-import clownkit from '../clownkit/index';
+import clownkit from '../clownkit';
 
 const login = async (args, state) => {
   const isSuccessSilent = args[0] === 'silent-success';

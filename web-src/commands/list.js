@@ -1,6 +1,6 @@
 import { writeLn } from '../io';
 import { ERROR, SUCCESS, PENDING } from './helpers/consts';
-import clownkit from '../clownkit/index';
+import clownkit from '../clownkit';
 
 const list = async () => {
   try {

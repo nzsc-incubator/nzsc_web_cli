@@ -1,7 +1,7 @@
 import { writeLn } from '../io';
 import { B, ERROR, SUCCESS, PENDING } from './helpers/consts';
 import createTurnEndListenerFor from './helpers/createTurnEndListenerFor';
-import clownkit from '../clownkit/index';
+import clownkit from '../clownkit';
 
 const join = async (args, state) => {
   if (!state.isLoggedIn) {

@@ -1,6 +1,6 @@
 import { writeLn, write2Ln } from '../io';
 import { A, B, ERROR, SUCCESS, PENDING } from './helpers/consts';
-import clownkit from '../clownkit/index';
+import clownkit from '../clownkit';
 
 const destroy = async (args, state) => {
   let roomName = args[0];
